@@ -38,3 +38,20 @@ num.add(1, 2)
 
 const str = new StringClass()
 str.add("x", "y")
+
+// 任意のクラスのインスタンスを返す関数をgenericsで表現する場合
+// https://github.com/Microsoft/TypeScript/wiki/FAQ#why-cant-i-write-typeof-t-new-t-or-instanceof-t-in-my-generic-function
+class Dog {
+  name: string
+  constructor(name: string) {
+    this.name = name
+  }
+}
+// genericsの情報はjsにしたときに消えてしまうので、new T()とは書けない
+// new()を持つオブジェクトの型としてTを表現するところがポイント
+function create<T>(ctor: { new(name: string): T }, name: string): T {
+  return new ctor(name)
+}
+
+const dog = create(Dog, 'one')
+console.log(dog)
