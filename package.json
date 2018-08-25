@@ -1,0 +1,16 @@
+{
+  "name": "typescript-handbook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "run": "ts-node"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "7.0.1",
+    "typescript": "3.0.1"
+  }
+}
