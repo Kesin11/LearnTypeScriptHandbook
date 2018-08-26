@@ -132,4 +132,26 @@ function getProp<T, K extends keyof T>(o: T, name: K): T[K] { // もう少し簡
 const jaridName: string = getProp(jarid, 'name')
 // const jaridUnknown = getProp(jarid, 'unknown') // エラー
 
-// Mapped types
+// Mapped types. TypeScript 2.1から
+// 半自動的に型定義を生成する機能という感じ
+type NullablePerson = { [P in keyof IPerson]: IPerson[P] | null } // IPersonのプロパティを** | nullに
+type PartialPerson = { [P in keyof IPerson]?: IPerson } // IPersonのプロパティを** | undefinedに
+type Nullable<T> = { [P in keyof T]: T[P] | null } // genericsにすることでさらに汎用的に
+type NullablePerson2 = Nullable<IPerson>
+
+// もっと単純な話としてはT[K]であればTに対してk型でアクセスして得られるtypeを返すという意味
+type UserName = IPerson['name'] // strings
+type UserAge = IPerson['age'] // number
+
+// Conditional Types. TypeScript 2.8から
+type TypeName<T> =
+  T extends string ? "string":
+  "number"
+type T0 = TypeName<string> // string
+type T1 = TypeName<number> // number
+
+// 関数と組み合わせる方は複雑で理解できなかった・・・
+// ExcludeやExtractが標準で用意されているので、それらが存在するということを覚えておく
+type T00 = Exclude<"a" | "b" | "c", "a"> // b | c
+type T01 = Extract<"a" | "b" | "c", "a" | "b"> // a | b
+type nonNull = NonNullable<string | number | undefined> // string | number
