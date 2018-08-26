@@ -63,3 +63,73 @@ function fixed(name: string | null): string {
 }
 
 // Type Aliases
+// 機能的なinterfaceと大体同じことは実現できる
+// このドキュメントのこの項目だけではinterfaceに比べて便利なシーンは分からなかった
+type Name = string
+type NameResolver = () => string
+type NameOrResolver = Name | NameResolver
+function getName(n: NameOrResolver): Name {
+  if (typeof n === "string") {
+    return n
+  }
+  else {
+    return n()
+  }
+}
+
+type Alias = { num: number }
+interface Interface { num: number }
+declare function aliased(arg: Alias): Alias
+declare function interface(arg: Interface): Interface
+
+// Literal Types
+type Direction = "left" | "right"
+const direction: Direction = "left"
+
+function rollDie(): 1 | 2 | 3 | 4 | 5 | 6 {
+  return 1
+}
+
+// Discriminated Unions
+interface Square {
+  kind: "square"
+  size: number
+}
+interface Rectangle {
+  kind: "rectangle"
+  width: number
+  height: number
+}
+interface Circle {
+  kind: "circle"
+  radius: number
+}
+type Shape2 = Square | Rectangle | Circle
+
+function area(s: Shape2): number { // 戻り値の型をnumberと明示すると、switchで網羅てきていなかった場合にundefinedが還るのでのでエラーとして検知できる
+  switch (s.kind) {
+    case "square": return s.size * s.size
+    case "rectangle": return s.height * s.width
+    case "circle": return Math.PI * s.radius * 2
+  }
+}
+
+// Index types
+// keyofを使うとプロパティを列挙できる。genericsと組み合わせると存在しないキーを参照するようなミスを未然に防ぐことができる
+function pluck<T, K extends keyof T>(o: T, names: K[]): T[K][] {
+  return names.map(n => o[n])
+}
+interface IPerson {
+  name: string
+  age: number
+}
+const jarid: IPerson = { name: 'Jarid', age: 35 }
+const props: string[] = pluck(jarid, ['name']) // 仮に存在しない'unknown'を指定した場合はエラーになる 
+
+function getProp<T, K extends keyof T>(o: T, name: K): T[K] { // もう少し簡易的な使い方
+  return o[name]
+}
+const jaridName: string = getProp(jarid, 'name')
+// const jaridUnknown = getProp(jarid, 'unknown') // エラー
+
+// Mapped types
