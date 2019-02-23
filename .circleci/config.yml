@@ -12,6 +12,7 @@ jobs:
       - checkout
       - node/with-cache:
           dir: ~/repo
+          cache-version: v2
           steps:
           - run: npm install
           - run:
